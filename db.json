@@ -23,19 +23,6 @@
       }
     },
     {
-      "id": "md9naawdbtv26dt9hpv",
-      "info": {
-        "nomeCompleto": "Iago Puzerzz",
-        "detalhes": {
-          "email": "iagopuzer06@hotmail.com",
-          "nascimento": "1996-04-02"
-        }
-      },
-      "estatisticas": {
-        "vendas": []
-      }
-    },
-    {
       "id": "md9nc16q394wj8x32ws",
       "info": {
         "nomeCompleto": "Carlos Eduardo",
@@ -46,6 +33,40 @@
       },
       "estatisticas": {
         "vendas": []
+      }
+    },
+    {
+      "id": "md9pl7tc35njj6v4u2",
+      "info": {
+        "nomeCompleto": "Iago Puzer",
+        "detalhes": {
+          "email": "iagopuzer06@hotmail.com",
+          "nascimento": "1996-04-02"
+        }
+      },
+      "estatisticas": {
+        "vendas": [
+          {
+            "data": "2025-07-19",
+            "valor": 2000
+          },
+          {
+            "data": "2025-07-19",
+            "valor": 10
+          },
+          {
+            "data": "2025-07-19",
+            "valor": 110
+          },
+          {
+            "data": "2025-07-19",
+            "valor": 50
+          },
+          {
+            "data": "2025-07-19",
+            "valor": 20
+          }
+        ]
       }
     }
   ]

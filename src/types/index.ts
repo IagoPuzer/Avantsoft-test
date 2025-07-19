@@ -45,29 +45,11 @@ export interface ClientesAPIResponse {
   };
 }
 
-// Tipo para resposta da API de estatísticas
-export interface EstatisticasAPIResponse {
-  vendasPorDia: {
-    data: string;
-    total: number;
-  }[];
-  clientesDestaque: {
-    maiorVolume: Cliente;
-    maiorMedia: Cliente;
-    maiorFrequencia: Cliente;
-  };
-}
-
 // Tipo para autenticação
 export interface Usuario {
   id: string;
   nome: string;
   email: string;
-}
-
-export interface LoginData {
-  email: string;
-  senha: string;
 }
 
 // Tipo para formulário de cliente

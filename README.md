@@ -1,69 +1,168 @@
-# React + TypeScript + Vite
+# Test Avantsoft - Sistema de Gerenciamento de Clientes
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este projeto é um sistema completo de gerenciamento de clientes com API real e interface React.
 
-Currently, two official plugins are available:
+## 🚀 Funcionalidades
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **API REST completa** com Express.js
+- **Interface React** moderna com TypeScript
+- **CRUD completo** de clientes (Criar, Ler, Atualizar, Deletar)
+- **Gerenciamento de vendas** por cliente
+- **Autenticação** de usuários
+- **Dashboard** com estatísticas
+- **Responsivo** com Tailwind CSS
 
-## Expanding the ESLint configuration
+## 📋 Pré-requisitos
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Node.js (versão 16 ou superior)
+- npm ou yarn
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🛠️ Instalação
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+1. **Clone o repositório**
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+git clone hhttps://github.com/IagoPuzer/Avantsoft-test.git
+cd Avantsoft-test
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. **Instale as dependências**
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
+
+## 🚀 Como executar
+
+### Opção 1: Usando a API Express.js (Recomendado)
+
+1. **Inicie a API**
+
+```bash
+npm run api
+```
+
+2. **Em outro terminal, inicie o frontend**
+
+```bash
+npm run dev
+```
+
+### Opção 2: Usando JSON Server
+
+1. **Inicie o JSON Server**
+
+```bash
+npm run json-server
+```
+
+2. **Em outro terminal, inicie o frontend**
+
+```bash
+npm run dev
+```
+
+## 📡 Endpoints da API
+
+### Clientes
+
+- `GET /api/clientes` - Listar todos os clientes
+- `GET /api/clientes/:id` - Buscar cliente por ID
+- `POST /api/clientes` - Criar novo cliente
+- `PUT /api/clientes/:id` - Atualizar cliente
+- `DELETE /api/clientes/:id` - Excluir cliente
+
+### Vendas
+
+- `POST /api/clientes/:id/vendas` - Adicionar venda ao cliente
+- `DELETE /api/clientes/:id/vendas/:index` - Remover venda do cliente
+
+### Status
+
+- `GET /api/health` - Verificar status da API
+
+## 📊 Estrutura de Dados
+
+### Cliente
+
+```json
+{
+  "id": "string",
+  "info": {
+    "nomeCompleto": "string",
+    "detalhes": {
+      "email": "string",
+      "nascimento": "YYYY-MM-DD"
+    }
+  },
+  "estatisticas": {
+    "vendas": [
+      {
+        "data": "YYYY-MM-DD",
+        "valor": number
+      }
+    ]
+  }
+}
+```
+
+### Venda
+
+```json
+{
+  "data": "YYYY-MM-DD",
+  "valor": number
+}
+```
+
+## 🎯 Como usar
+
+1. **Acesse a aplicação** em `http://localhost:5173`
+2. **Faça login** com login e senha aletórios:
+3. **Navegue pelo dashboard** para ver estatísticas
+4. **Gerencie clientes** na página de clientes:
+   - Adicione novos clientes
+   - Edite informações existentes
+   - Exclua clientes
+   - Adicione vendas aos clientes
+
+## 🛠️ Tecnologias utilizadas
+
+### Backend
+
+- **Express.js** - Framework web
+- **CORS** - Middleware para CORS
+- **JSON Server** - API REST alternativa
+
+### Frontend
+
+- **React 19** - Biblioteca JavaScript
+- **TypeScript** - Tipagem estática
+- **Vite** - Build tool
+- **Tailwind CSS** - Framework CSS
+- **React Router** - Roteamento
+- **Axios** - Cliente HTTP
+- **React Hook Form** - Gerenciamento de formulários
+- **Recharts** - Gráficos
+
+## 📁 Estrutura do projeto
+
+```
+test-avantsoft/
+├── server/
+│   └── api.js          # API Express.js
+├── src/
+│   ├── components/     # Componentes React
+│   ├── pages/         # Páginas da aplicação
+│   ├── services/      # Serviços de API
+│   ├── types/         # Definições TypeScript
+│   └── utils/         # Utilitários
+├── db.json            # Banco de dados JSON
+└── package.json       # Dependências
+```
+
+### Portas padrão
+
+- **Frontend**: `http://localhost:5173`
+- **API Express**: `http://localhost:3001`
+- **JSON Server**: `http://localhost:3001`
