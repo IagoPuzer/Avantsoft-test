@@ -63,6 +63,6 @@ export interface ClienteFormData {
 export interface ClienteEstatisticas {
   totalVendas: number;
   mediaValor: number;
-  frequenciaCompras: number;
+  frequenciaVendas: number;
   letraFaltante: string;
 }

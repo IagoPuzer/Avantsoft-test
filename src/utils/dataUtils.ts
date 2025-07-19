@@ -34,12 +34,12 @@ export const calcularEstatisticasCliente = (
   );
   const mediaValor =
     cliente.vendas.length > 0 ? totalVendas / cliente.vendas.length : 0;
-  const frequenciaCompras = cliente.vendas.length;
+  const frequenciaVendas = cliente.vendas.length;
 
   return {
     totalVendas,
     mediaValor,
-    frequenciaCompras,
+    frequenciaVendas,
     letraFaltante: encontrarLetraFaltante(cliente.nomeCompleto),
   };
 };
@@ -117,4 +117,4 @@ export const encontrarClienteMaiorMedia = (
 export const encontrarClienteMaiorFrequencia = (
   clientes: Cliente[]
 ): { cliente: Cliente; estatisticas: ClienteEstatisticas } | null =>
-  encontrarClienteComMaiorValor(clientes, (estat) => estat.frequenciaCompras);
+  encontrarClienteComMaiorValor(clientes, (estat) => estat.frequenciaVendas);

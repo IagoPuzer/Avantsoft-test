@@ -108,7 +108,7 @@ const Dashboard: React.FC = () => {
           subtitle={
             clienteMaiorFrequencia && (
               <span>
-                Compras: {clienteMaiorFrequencia.estatisticas.frequenciaCompras}
+                Vendas: {clienteMaiorFrequencia.estatisticas.frequenciaVendas}
               </span>
             )
           }
