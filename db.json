@@ -1,0 +1,52 @@
+{
+  "clientes": [
+    {
+      "id": "1",
+      "info": {
+        "nomeCompleto": "Ana Beatriz",
+        "detalhes": {
+          "email": "ana.b@example.com",
+          "nascimento": "1992-05-01"
+        }
+      },
+      "estatisticas": {
+        "vendas": [
+          {
+            "data": "2024-01-01",
+            "valor": 150
+          },
+          {
+            "data": "2024-01-02",
+            "valor": 50
+          }
+        ]
+      }
+    },
+    {
+      "id": "md9naawdbtv26dt9hpv",
+      "info": {
+        "nomeCompleto": "Iago Puzerzz",
+        "detalhes": {
+          "email": "iagopuzer06@hotmail.com",
+          "nascimento": "1996-04-02"
+        }
+      },
+      "estatisticas": {
+        "vendas": []
+      }
+    },
+    {
+      "id": "md9nc16q394wj8x32ws",
+      "info": {
+        "nomeCompleto": "Carlos Eduardo",
+        "detalhes": {
+          "email": "cadu@example.com",
+          "nascimento": "1987-08-14"
+        }
+      },
+      "estatisticas": {
+        "vendas": []
+      }
+    }
+  ]
+}

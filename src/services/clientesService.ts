@@ -3,125 +3,140 @@ import type {
   ClienteFormData,
   ClienteAPI,
 } from "../types";
-import { mockClientesResponse, delay } from "./mockData";
+import axios from "axios";
 
-// Funções auxiliares para localStorage
-const getClientesFromStorage = (): ClienteAPI[] => {
-  try {
-    const clientes = localStorage.getItem("clientes");
-    return clientes ? JSON.parse(clientes) : [];
-  } catch (error) {
-    console.error("Erro ao ler clientes do localStorage:", error);
-    return [];
+// Configuração da API
+const API_BASE_URL = "http://localhost:3001/api";
+
+// Instância do axios com configurações padrão
+const api = axios.create({
+  baseURL: API_BASE_URL,
+  timeout: 10000,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+// Interceptor para tratamento de erros
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error("Erro na API:", error.response?.data || error.message);
+    return Promise.reject(error);
   }
-};
-
-const saveClientesToStorage = (clientes: ClienteAPI[]) => {
-  try {
-    localStorage.setItem("clientes", JSON.stringify(clientes));
-  } catch (error) {
-    console.error("Erro ao salvar clientes no localStorage:", error);
-  }
-};
-
-// Gerar ID único
-const generateId = (): string => {
-  return Date.now().toString(36) + Math.random().toString(36).substr(2);
-};
-
-// Converter ClienteFormData para ClienteAPI
-const convertToClienteAPI = (cliente: ClienteFormData): ClienteAPI => {
-  return {
-    id: generateId(), // Adicionar ID único
-    info: {
-      nomeCompleto: cliente.nomeCompleto,
-      detalhes: {
-        email: cliente.email,
-        nascimento: cliente.dataNascimento,
-      },
-    },
-    estatisticas: {
-      vendas: [], // Novos clientes começam sem vendas
-    },
-  };
-};
+);
 
 // Serviços de Clientes
 export const clientesService = {
   // Listar clientes
-  listar: async (): Promise<ClientesAPIResponse> => {
-    await delay(1000); // Simular delay da rede
+  listar: async (
+    pagina: number = 1,
+    limite: number = 10
+  ): Promise<ClientesAPIResponse> => {
+    try {
+      const response = await api.get("/clientes", {
+        params: { page: pagina, limit: limite },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao listar clientes:", error);
+      throw new Error("Falha ao carregar clientes");
+    }
+  },
 
-    // Combinar dados mockados com dados do localStorage
-    const clientesMockados = mockClientesResponse.data.clientes;
-    const clientesStorage = getClientesFromStorage();
-    const todosClientes = [...clientesStorage, ...clientesMockados];
-
-    return {
-      data: {
-        clientes: todosClientes,
-      },
-      meta: {
-        registroTotal: todosClientes.length,
-        pagina: 1,
-      },
-      redundante: {
-        status: "ok",
-      },
-    };
+  // Buscar cliente por ID
+  buscarPorId: async (id: string): Promise<ClienteAPI> => {
+    try {
+      const response = await api.get(`/clientes/${id}`);
+      return response.data.data;
+    } catch (error) {
+      console.error("Erro ao buscar cliente:", error);
+      throw new Error("Falha ao buscar cliente");
+    }
   },
 
   // Adicionar cliente
-  adicionar: async (cliente: ClienteFormData) => {
-    await delay(500);
-
-    // Converter para formato ClienteAPI
-    const novoCliente = convertToClienteAPI(cliente);
-
-    // Adicionar ao localStorage
-    const clientesExistentes = getClientesFromStorage();
-    clientesExistentes.push(novoCliente);
-    saveClientesToStorage(clientesExistentes);
-
-    return { success: true };
+  adicionar: async (
+    cliente: ClienteFormData
+  ): Promise<{ success: boolean; data: ClienteAPI }> => {
+    try {
+      const response = await api.post("/clientes", cliente);
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao adicionar cliente:", error);
+      throw new Error("Falha ao adicionar cliente");
+    }
   },
 
   // Atualizar cliente
-  atualizar: async (id: string, cliente: ClienteFormData) => {
-    await delay(500);
-
-    // Atualizar no localStorage
-    const clientesExistentes = getClientesFromStorage();
-    const index = clientesExistentes.findIndex((c) => c.id === id);
-
-    if (index !== -1) {
-      clientesExistentes[index] = {
-        ...clientesExistentes[index],
-        info: {
-          nomeCompleto: cliente.nomeCompleto,
-          detalhes: {
-            email: cliente.email,
-            nascimento: cliente.dataNascimento,
-          },
-        },
-      };
-      saveClientesToStorage(clientesExistentes);
+  atualizar: async (
+    id: string,
+    cliente: ClienteFormData
+  ): Promise<{ success: boolean; data: ClienteAPI }> => {
+    try {
+      const response = await api.put(`/clientes/${id}`, cliente);
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao atualizar cliente:", error);
+      throw new Error("Falha ao atualizar cliente");
     }
-
-    return { success: true };
   },
 
   // Excluir cliente
-  excluir: async (id: string) => {
-    await delay(500);
+  excluir: async (
+    id: string
+  ): Promise<{ success: boolean; message: string; data: ClienteAPI }> => {
+    try {
+      const response = await api.delete(`/clientes/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao excluir cliente:", error);
+      throw new Error("Falha ao excluir cliente");
+    }
+  },
 
-    // Remover do localStorage usando ID
-    const clientesExistentes = getClientesFromStorage();
-    const clientesFiltrados = clientesExistentes.filter(
-      (cliente) => cliente.id !== id
-    );
-    saveClientesToStorage(clientesFiltrados);
+  // Adicionar venda ao cliente
+  adicionarVenda: async (
+    clienteId: string,
+    venda: { data: string; valor: number }
+  ): Promise<{ success: boolean; data: { data: string; valor: number } }> => {
+    try {
+      const response = await api.post(`/clientes/${clienteId}/vendas`, venda);
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao adicionar venda:", error);
+      throw new Error("Falha ao adicionar venda");
+    }
+  },
 
-    return { success: true };
+  // Remover venda do cliente
+  removerVenda: async (
+    clienteId: string,
+    vendaIndex: number
+  ): Promise<{
+    success: boolean;
+    message: string;
+    data: { data: string; valor: number };
+  }> => {
+    try {
+      const response = await api.delete(
+        `/clientes/${clienteId}/vendas/${vendaIndex}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao remover venda:", error);
+      throw new Error("Falha ao remover venda");
+    }
+  },
+
+  // Verificar status da API
+  verificarStatus: async (): Promise<{ status: string; timestamp: string }> => {
+    try {
+      const response = await api.get("/health");
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao verificar status da API:", error);
+      throw new Error("API não está disponível");
+    }
   },
 };
