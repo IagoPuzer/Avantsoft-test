@@ -10,7 +10,7 @@ interface ClientFormProps {
   loading?: boolean;
 }
 
-const AddClientForm: React.FC<ClientFormProps> = ({
+const ClientForm: React.FC<ClientFormProps> = ({
   cliente,
   onSubmit,
   onCancel,
@@ -185,4 +185,4 @@ const AddClientForm: React.FC<ClientFormProps> = ({
   );
 };
 
-export default AddClientForm;
+export default ClientForm;

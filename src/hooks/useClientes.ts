@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { clientesService } from "../services/clientesService";
 import { normalizarCliente } from "../utils/dataUtils";
 import type { ClienteFormData } from "../types";
+import { toast } from "sonner";
 
 // Chaves para o cache do React Query
 export const clienteKeys = {
@@ -39,6 +40,7 @@ export const useAdicionarCliente = () => {
     mutationFn: (cliente: ClienteFormData) =>
       clientesService.addClient(cliente),
     onSuccess: () => {
+      toast.success("Cliente criado com sucesso");
       queryClient.invalidateQueries({ queryKey: clienteKeys.lists() });
     },
     onError: (error) => {
@@ -55,6 +57,7 @@ export const useAtualizarCliente = () => {
     mutationFn: ({ id, cliente }: { id: string; cliente: ClienteFormData }) =>
       clientesService.updateClient(id, cliente),
     onSuccess: () => {
+      toast.success("Cliente atualizado com sucesso");
       queryClient.invalidateQueries({ queryKey: clienteKeys.lists() });
     },
     onError: (error) => {
@@ -70,6 +73,7 @@ export const useExcluirCliente = () => {
   return useMutation({
     mutationFn: (id: string) => clientesService.deleteClient(id),
     onSuccess: () => {
+      toast.success("Cliente excluido com sucesso");
       queryClient.invalidateQueries({ queryKey: clienteKeys.lists() });
     },
     onError: (error) => {
@@ -91,6 +95,7 @@ export const useAdicionarVenda = () => {
       venda: { data: string; valor: number };
     }) => clientesService.addSale(clienteId, venda),
     onSuccess: () => {
+      toast.success("Venda adicionada com sucesso");
       queryClient.invalidateQueries({ queryKey: clienteKeys.lists() });
     },
     onError: (error) => {

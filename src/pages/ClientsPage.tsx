@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import ClientList from "../components/Clients/ClientList";
-import AddClientForm from "../components/Clients/AddClientForm";
+import ClientForm from "../components/Clients/ClientForm";
 import AddSaleForm from "../components/Clients/AddSaleForm";
 import ConfirmDeleteModal from "../components/Clients/ConfirmDeleteModal";
 import {
@@ -150,7 +150,7 @@ const ClientsPage: React.FC = () => {
       />
 
       {modal?.tipo === "editar" && (
-        <AddClientForm
+        <ClientForm
           cliente={modal.cliente}
           onSubmit={handleSubmit}
           onCancel={handleCancel}
@@ -159,7 +159,7 @@ const ClientsPage: React.FC = () => {
       )}
 
       {modal?.tipo === "adicionar" && (
-        <AddClientForm
+        <ClientForm
           onSubmit={handleSubmit}
           onCancel={handleCancel}
           loading={isLoadingMutations}

@@ -11,6 +11,7 @@ import Layout from "./components/Layout";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import ClientsPage from "./pages/ClientsPage";
+import { Toaster } from "sonner";
 import "./App.css";
 
 // Componente para rotas protegidas
@@ -72,6 +73,7 @@ const App: React.FC = () => {
   return (
     <AuthProvider>
       <AppContent />
+      <Toaster position="top-center" />
     </AuthProvider>
   );
 };

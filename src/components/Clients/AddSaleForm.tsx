@@ -27,7 +27,7 @@ const AddSaleForm: React.FC<VendaFormProps> = ({
     reset,
   } = useForm<VendaFormData>({
     defaultValues: {
-      data: new Date().toISOString().split("T")[0], // Data atual
+      data: new Date().toISOString().split("T")[0],
       valor: 0,
     },
   });
