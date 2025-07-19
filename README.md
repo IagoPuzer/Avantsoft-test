@@ -67,7 +67,6 @@ npm run dev
 ### Clientes
 
 - `GET /api/clientes` - Listar todos os clientes
-- `GET /api/clientes/:id` - Buscar cliente por ID
 - `POST /api/clientes` - Criar novo cliente
 - `PUT /api/clientes/:id` - Atualizar cliente
 - `DELETE /api/clientes/:id` - Excluir cliente
@@ -75,7 +74,6 @@ npm run dev
 ### Vendas
 
 - `POST /api/clientes/:id/vendas` - Adicionar venda ao cliente
-- `DELETE /api/clientes/:id/vendas/:index` - Remover venda do cliente
 
 ### Status
 
@@ -118,7 +116,7 @@ npm run dev
 ## 🎯 Como usar
 
 1. **Acesse a aplicação** em `http://localhost:5173`
-2. **Faça login** com login e senha aletórios:
+2. **Faça login** com email e senha aletórios:
 3. **Navegue pelo dashboard** para ver estatísticas
 4. **Gerencie clientes** na página de clientes:
    - Adicione novos clientes
@@ -145,22 +143,6 @@ npm run dev
 - **TanStack Query (React Query)** - Gerenciamento de cache e requisições assíncronas
 - **React Hook Form** - Gerenciamento de formulários
 - **Recharts** - Gráficos
-
-## 📁 Estrutura do projeto
-
-```
-test-avantsoft/
-├── server/
-│   └── api.js          # API Express.js
-├── src/
-│   ├── components/     # Componentes React
-│   ├── pages/         # Páginas da aplicação
-│   ├── services/      # Serviços de API
-│   ├── types/         # Definições TypeScript
-│   └── utils/         # Utilitários
-├── db.json            # Banco de dados JSON
-└── package.json       # Dependências
-```
 
 ### Portas padrão
 
