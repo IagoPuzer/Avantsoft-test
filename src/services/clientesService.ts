@@ -109,26 +109,6 @@ export const clientesService = {
     }
   },
 
-  // Remover venda do cliente
-  removerVenda: async (
-    clienteId: string,
-    vendaIndex: number
-  ): Promise<{
-    success: boolean;
-    message: string;
-    data: { data: string; valor: number };
-  }> => {
-    try {
-      const response = await api.delete(
-        `/clientes/${clienteId}/vendas/${vendaIndex}`
-      );
-      return response.data;
-    } catch (error) {
-      console.error("Erro ao remover venda:", error);
-      throw new Error("Falha ao remover venda");
-    }
-  },
-
   // Verificar status da API
   verificarStatus: async (): Promise<{ status: string; timestamp: string }> => {
     try {
