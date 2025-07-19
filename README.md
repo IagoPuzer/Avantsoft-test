@@ -142,6 +142,7 @@ npm run dev
 - **Tailwind CSS** - Framework CSS
 - **React Router** - Roteamento
 - **Axios** - Cliente HTTP
+- **TanStack Query (React Query)** - Gerenciamento de cache e requisições assíncronas
 - **React Hook Form** - Gerenciamento de formulários
 - **Recharts** - Gráficos
 
