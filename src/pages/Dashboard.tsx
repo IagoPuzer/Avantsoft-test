@@ -15,6 +15,7 @@ import {
   encontrarClienteMaiorVolume,
   encontrarClienteMaiorMedia,
   encontrarClienteMaiorFrequencia,
+  formatarData,
 } from "../utils/dataUtils";
 import type { Cliente } from "../types";
 import { FiTrendingUp, FiDollarSign, FiShoppingCart } from "react-icons/fi";
@@ -149,15 +150,11 @@ const Dashboard: React.FC = () => {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis
                     dataKey="data"
-                    tickFormatter={(value) =>
-                      new Date(value).toLocaleDateString("pt-BR")
-                    }
+                    tickFormatter={(value) => formatarData(value)}
                   />
                   <YAxis />
                   <Tooltip
-                    labelFormatter={(value) =>
-                      new Date(value).toLocaleDateString("pt-BR")
-                    }
+                    labelFormatter={(value) => formatarData(value)}
                     formatter={(value: number) => [
                       `R$ ${value.toFixed(2)}`,
                       "Total",
