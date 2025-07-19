@@ -18,7 +18,7 @@ export const useClientes = (pagina: number = 1, limite: number = 10) => {
   return useQuery({
     queryKey: clienteKeys.list({ pagina, limite }),
     queryFn: async () => {
-      const response = await clientesService.listar(pagina, limite);
+      const response = await clientesService.listClient(pagina, limite);
       return {
         ...response,
         data: {
@@ -37,7 +37,7 @@ export const useAdicionarCliente = () => {
 
   return useMutation({
     mutationFn: (cliente: ClienteFormData) =>
-      clientesService.adicionar(cliente),
+      clientesService.addClient(cliente),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: clienteKeys.lists() });
     },
@@ -53,7 +53,7 @@ export const useAtualizarCliente = () => {
 
   return useMutation({
     mutationFn: ({ id, cliente }: { id: string; cliente: ClienteFormData }) =>
-      clientesService.atualizar(id, cliente),
+      clientesService.updateClient(id, cliente),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: clienteKeys.lists() });
     },
@@ -68,7 +68,7 @@ export const useExcluirCliente = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => clientesService.excluir(id),
+    mutationFn: (id: string) => clientesService.deleteClient(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: clienteKeys.lists() });
     },
@@ -89,7 +89,7 @@ export const useAdicionarVenda = () => {
     }: {
       clienteId: string;
       venda: { data: string; valor: number };
-    }) => clientesService.adicionarVenda(clienteId, venda),
+    }) => clientesService.addSale(clienteId, venda),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: clienteKeys.lists() });
     },

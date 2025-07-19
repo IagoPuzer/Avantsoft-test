@@ -5,10 +5,8 @@ import type {
 } from "../types";
 import axios from "axios";
 
-// Configuração da API
 const API_BASE_URL = "http://localhost:3001/api";
 
-// Instância do axios com configurações padrão
 const api = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10000,
@@ -26,10 +24,8 @@ api.interceptors.response.use(
   }
 );
 
-// Serviços de Clientes
 export const clientesService = {
-  // Listar clientes
-  listar: async (
+  listClient: async (
     pagina: number = 1,
     limite: number = 10
   ): Promise<ClientesAPIResponse> => {
@@ -44,19 +40,7 @@ export const clientesService = {
     }
   },
 
-  // Buscar cliente por ID
-  buscarPorId: async (id: string): Promise<ClienteAPI> => {
-    try {
-      const response = await api.get(`/clientes/${id}`);
-      return response.data.data;
-    } catch (error) {
-      console.error("Erro ao buscar cliente:", error);
-      throw new Error("Falha ao buscar cliente");
-    }
-  },
-
-  // Adicionar cliente
-  adicionar: async (
+  addClient: async (
     cliente: ClienteFormData
   ): Promise<{ success: boolean; data: ClienteAPI }> => {
     try {
@@ -68,8 +52,7 @@ export const clientesService = {
     }
   },
 
-  // Atualizar cliente
-  atualizar: async (
+  updateClient: async (
     id: string,
     cliente: ClienteFormData
   ): Promise<{ success: boolean; data: ClienteAPI }> => {
@@ -82,8 +65,7 @@ export const clientesService = {
     }
   },
 
-  // Excluir cliente
-  excluir: async (
+  deleteClient: async (
     id: string
   ): Promise<{ success: boolean; message: string; data: ClienteAPI }> => {
     try {
@@ -95,8 +77,7 @@ export const clientesService = {
     }
   },
 
-  // Adicionar venda ao cliente
-  adicionarVenda: async (
+  addSale: async (
     clienteId: string,
     venda: { data: string; valor: number }
   ): Promise<{ success: boolean; data: { data: string; valor: number } }> => {

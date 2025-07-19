@@ -1,11 +1,6 @@
-import { delay } from "./mockData";
-
 // Serviços de Autenticação
 export const authService = {
-  // Login
   login: async (email: string, senha: string) => {
-    await delay(1000);
-
     // Aceitar qualquer email válido e senha com pelo menos 6 caracteres
     if (email && email.includes("@") && senha && senha.length >= 6) {
       const token = "mock-jwt-token-" + Date.now();
@@ -27,18 +22,15 @@ export const authService = {
     }
   },
 
-  // Logout
   logout: () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("usuario");
   },
 
-  // Verificar se está autenticado
   isAuthenticated: (): boolean => {
     return !!localStorage.getItem("authToken");
   },
 
-  // Obter usuário atual
   getCurrentUser: () => {
     const usuario = localStorage.getItem("usuario");
     return usuario ? JSON.parse(usuario) : null;

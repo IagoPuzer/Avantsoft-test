@@ -32,7 +32,12 @@
         }
       },
       "estatisticas": {
-        "vendas": []
+        "vendas": [
+          {
+            "data": "2025-07-19",
+            "valor": 110
+          }
+        ]
       }
     },
     {
