@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import ClientList from "../components/Clients/ClientList";
 import AddClientForm from "../components/Clients/AddClientForm";
 import AddSaleForm from "../components/Clients/AddSaleForm";
+import ConfirmDeleteModal from "../components/Clients/ConfirmDeleteModal";
 import {
   useClientes,
   useAdicionarCliente,
@@ -12,11 +13,15 @@ import {
 import type { Cliente, ClienteFormData } from "../types";
 import { FiPlus } from "react-icons/fi";
 
-type ModalType = "cliente" | "venda" | null;
+type ModalContext =
+  | { tipo: "editar"; cliente: Cliente }
+  | { tipo: "adicionar" }
+  | { tipo: "venda"; cliente: Cliente }
+  | { tipo: "excluir"; cliente: Cliente }
+  | null;
 
 const ClientsPage: React.FC = () => {
-  const [modalType, setModalType] = useState<ModalType>(null);
-  const [selectedCliente, setSelectedCliente] = useState<Cliente | undefined>();
+  const [modal, setModal] = useState<ModalContext>(null);
 
   const { data, isLoading: isLoadingClientes, error, refetch } = useClientes();
 
@@ -28,37 +33,40 @@ const ClientsPage: React.FC = () => {
   const clientes = data?.data.clientes || [];
 
   const handleAdd = () => {
-    setSelectedCliente(undefined);
-    setModalType("cliente");
+    setModal({ tipo: "adicionar" });
   };
 
   const handleEdit = (cliente: Cliente) => {
-    setSelectedCliente(cliente);
-    setModalType("cliente");
-  };
-
-  const handleDelete = async (id: string) => {
-    await excluirClienteMutation.mutateAsync(id);
+    setModal({ tipo: "editar", cliente });
   };
 
   const handleAddVenda = (cliente: Cliente) => {
-    setSelectedCliente(cliente);
-    setModalType("venda");
+    setModal({ tipo: "venda", cliente });
+  };
+
+  const handleRequestDelete = (cliente: Cliente) => {
+    setModal({ tipo: "excluir", cliente });
+  };
+
+  const handleCancel = () => {
+    setModal(null);
+  };
+
+  const handleCancelDelete = () => {
+    setModal(null);
   };
 
   const handleSubmit = async (data: ClienteFormData) => {
     try {
-      if (selectedCliente) {
+      if (modal?.tipo === "editar") {
         await atualizarClienteMutation.mutateAsync({
-          id: selectedCliente.id!,
+          id: modal.cliente.id!,
           cliente: data,
         });
       } else {
         await adicionarClienteMutation.mutateAsync(data);
       }
-
-      setModalType(null);
-      setSelectedCliente(undefined);
+      setModal(null);
     } catch (error) {
       console.error("Erro ao salvar cliente:", error);
     }
@@ -66,23 +74,23 @@ const ClientsPage: React.FC = () => {
 
   const handleSubmitVenda = async (data: { data: string; valor: number }) => {
     try {
-      if (selectedCliente) {
+      if (modal?.tipo === "venda") {
         await adicionarVendaMutation.mutateAsync({
-          clienteId: selectedCliente.id!,
+          clienteId: modal.cliente.id!,
           venda: data,
         });
       }
-
-      setModalType(null);
-      setSelectedCliente(undefined);
+      setModal(null);
     } catch (error) {
       console.error("Erro ao adicionar venda:", error);
     }
   };
 
-  const handleCancel = () => {
-    setModalType(null);
-    setSelectedCliente(undefined);
+  const handleDelete = async () => {
+    if (modal?.tipo === "excluir") {
+      await excluirClienteMutation.mutateAsync(modal.cliente.id!);
+      setModal(null);
+    }
   };
 
   const handleRefetch = () => {
@@ -136,26 +144,44 @@ const ClientsPage: React.FC = () => {
       <ClientList
         clientes={clientes}
         onEdit={handleEdit}
-        onDelete={handleDelete}
+        onRequestDelete={handleRequestDelete}
         onAddVenda={handleAddVenda}
         isDeleting={excluirClienteMutation.isPending}
       />
 
-      {modalType === "cliente" && (
+      {modal?.tipo === "editar" && (
         <AddClientForm
-          cliente={selectedCliente}
+          cliente={modal.cliente}
           onSubmit={handleSubmit}
           onCancel={handleCancel}
           loading={isLoadingMutations}
         />
       )}
 
-      {modalType === "venda" && selectedCliente && (
+      {modal?.tipo === "adicionar" && (
+        <AddClientForm
+          onSubmit={handleSubmit}
+          onCancel={handleCancel}
+          loading={isLoadingMutations}
+        />
+      )}
+
+      {modal?.tipo === "venda" && (
         <AddSaleForm
-          clienteNome={selectedCliente.nomeCompleto}
+          clienteNome={modal.cliente.nomeCompleto}
           onSubmit={handleSubmitVenda}
           onCancel={handleCancel}
           loading={adicionarVendaMutation.isPending}
+        />
+      )}
+
+      {modal?.tipo === "excluir" && (
+        <ConfirmDeleteModal
+          open={true}
+          cliente={modal.cliente}
+          onCancel={handleCancelDelete}
+          onConfirm={handleDelete}
+          loading={excluirClienteMutation.isPending}
         />
       )}
     </div>
