@@ -1,17 +1,21 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import type { Cliente, ClienteFormData } from "../../types";
-import { FiUser, FiMail, FiCalendar, FiX, FiSave } from "react-icons/fi";
+import { FiDollarSign, FiCalendar, FiX, FiSave } from "react-icons/fi";
 
-interface ClientFormProps {
-  cliente?: Cliente;
-  onSubmit: (data: ClienteFormData) => void;
+interface VendaFormData {
+  data: string;
+  valor: number;
+}
+
+interface VendaFormProps {
+  clienteNome: string;
+  onSubmit: (data: VendaFormData) => void;
   onCancel: () => void;
   loading?: boolean;
 }
 
-const ClientForm: React.FC<ClientFormProps> = ({
-  cliente,
+const VendaForm: React.FC<VendaFormProps> = ({
+  clienteNome,
   onSubmit,
   onCancel,
   loading = false,
@@ -21,17 +25,14 @@ const ClientForm: React.FC<ClientFormProps> = ({
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<ClienteFormData>({
-    defaultValues: cliente
-      ? {
-          nomeCompleto: cliente.nomeCompleto,
-          email: cliente.email,
-          dataNascimento: cliente.dataNascimento,
-        }
-      : undefined,
+  } = useForm<VendaFormData>({
+    defaultValues: {
+      data: new Date().toISOString().split("T")[0], // Data atual
+      valor: 0,
+    },
   });
 
-  const handleFormSubmit = (data: ClienteFormData) => {
+  const handleFormSubmit = (data: VendaFormData) => {
     onSubmit(data);
   };
 
@@ -46,7 +47,7 @@ const ClientForm: React.FC<ClientFormProps> = ({
         <div className="mt-3">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-base sm:text-lg font-medium text-gray-900">
-              {cliente ? "Editar Cliente" : "Adicionar Cliente"}
+              Adicionar Venda
             </h3>
             <button
               onClick={handleCancel}
@@ -56,94 +57,33 @@ const ClientForm: React.FC<ClientFormProps> = ({
             </button>
           </div>
 
+          <div className="mb-4">
+            <p className="text-sm text-gray-600">
+              Cliente:{" "}
+              <span className="font-medium text-gray-900">{clienteNome}</span>
+            </p>
+          </div>
+
           <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
-            {/* Nome Completo */}
             <div>
               <label
-                htmlFor="nomeCompleto"
+                htmlFor="data"
                 className="block text-sm font-medium text-gray-700"
               >
-                Nome Completo
-              </label>
-              <div className="mt-1 relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FiUser className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  {...register("nomeCompleto", {
-                    required: "Nome é obrigatório",
-                    minLength: {
-                      value: 2,
-                      message: "Nome deve ter pelo menos 2 caracteres",
-                    },
-                  })}
-                  type="text"
-                  className="appearance-none relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                  placeholder="Nome completo"
-                />
-              </div>
-              {errors.nomeCompleto && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.nomeCompleto.message}
-                </p>
-              )}
-            </div>
-
-            {/* Email */}
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email
-              </label>
-              <div className="mt-1 relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FiMail className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  {...register("email", {
-                    required: "Email é obrigatório",
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "Email inválido",
-                    },
-                  })}
-                  type="email"
-                  className="appearance-none relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                  placeholder="seu@email.com"
-                />
-              </div>
-              {errors.email && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.email.message}
-                </p>
-              )}
-            </div>
-
-            {/* Data de Nascimento */}
-            <div>
-              <label
-                htmlFor="dataNascimento"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Data de Nascimento
+                Data da Venda
               </label>
               <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <FiCalendar className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
-                  {...register("dataNascimento", {
-                    required: "Data de nascimento é obrigatória",
+                  {...register("data", {
+                    required: "Data é obrigatória",
                     validate: (value) => {
                       const date = new Date(value);
                       const today = new Date();
                       if (date > today) {
-                        return "Data de nascimento não pode ser no futuro";
-                      }
-                      if (date.getFullYear() < 1900) {
-                        return "Data de nascimento inválida";
+                        return "Data não pode ser no futuro";
                       }
                       return true;
                     },
@@ -152,14 +92,47 @@ const ClientForm: React.FC<ClientFormProps> = ({
                   className="appearance-none relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 />
               </div>
-              {errors.dataNascimento && (
+              {errors.data && (
                 <p className="mt-1 text-sm text-red-600">
-                  {errors.dataNascimento.message}
+                  {errors.data.message}
                 </p>
               )}
             </div>
 
-            {/* Botões */}
+            <div>
+              <label
+                htmlFor="valor"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Valor da Venda
+              </label>
+              <div className="mt-1 relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FiDollarSign className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  {...register("valor", {
+                    required: "Valor é obrigatório",
+                    min: {
+                      value: 0.01,
+                      message: "Valor deve ser maior que zero",
+                    },
+                    valueAsNumber: true,
+                  })}
+                  type="number"
+                  step="0.01"
+                  min="0.01"
+                  className="appearance-none relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  placeholder="0,00"
+                />
+              </div>
+              {errors.valor && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.valor.message}
+                </p>
+              )}
+            </div>
+
             <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-4">
               <button
                 type="button"
@@ -175,7 +148,7 @@ const ClientForm: React.FC<ClientFormProps> = ({
                 className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
               >
                 <FiSave className="mr-2 h-4 w-4" />
-                {loading ? "Salvando..." : cliente ? "Atualizar" : "Salvar"}
+                {loading ? "Salvando..." : "Adicionar Venda"}
               </button>
             </div>
           </form>
@@ -185,4 +158,4 @@ const ClientForm: React.FC<ClientFormProps> = ({
   );
 };
 
-export default ClientForm;
+export default VendaForm;

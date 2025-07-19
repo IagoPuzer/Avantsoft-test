@@ -1,83 +1,161 @@
 import React, { useState } from "react";
 import ClientList from "../components/Clients/ClientList";
 import ClientForm from "../components/Clients/ClientForm";
-import { clientesService } from "../services/clientesService";
+import VendaForm from "../components/Clients/VendaForm";
+import {
+  useClientes,
+  useAdicionarCliente,
+  useAtualizarCliente,
+  useExcluirCliente,
+  useAdicionarVenda,
+} from "../hooks/useClientes";
 import type { Cliente, ClienteFormData } from "../types";
+import { FiPlus } from "react-icons/fi";
+
+type ModalType = "cliente" | "venda" | null;
 
 const ClientsPage: React.FC = () => {
-  const [showForm, setShowForm] = useState(false);
-  const [editingCliente, setEditingCliente] = useState<Cliente | undefined>();
-  const [loading, setLoading] = useState(false);
-  const [refreshKey, setRefreshKey] = useState(0); // Para forçar atualização da lista
+  const [modalType, setModalType] = useState<ModalType>(null);
+  const [selectedCliente, setSelectedCliente] = useState<Cliente | undefined>();
+
+  const { data, isLoading: isLoadingClientes, error, refetch } = useClientes();
+
+  const adicionarClienteMutation = useAdicionarCliente();
+  const atualizarClienteMutation = useAtualizarCliente();
+  const excluirClienteMutation = useExcluirCliente();
+  const adicionarVendaMutation = useAdicionarVenda();
+
+  const clientes = data?.data.clientes || [];
 
   const handleAdd = () => {
-    setEditingCliente(undefined);
-    setShowForm(true);
+    setSelectedCliente(undefined);
+    setModalType("cliente");
   };
 
   const handleEdit = (cliente: Cliente) => {
-    setEditingCliente(cliente);
-    setShowForm(true);
+    setSelectedCliente(cliente);
+    setModalType("cliente");
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm("Tem certeza que deseja excluir este cliente?")) {
-      try {
-        setLoading(true);
-        await clientesService.excluir(id);
-        // Forçar atualização da lista
-        setRefreshKey((prev) => prev + 1);
-      } catch (error) {
-        console.error("Erro ao excluir cliente:", error);
-        alert("Erro ao excluir cliente");
-      } finally {
-        setLoading(false);
-      }
-    }
+    await excluirClienteMutation.mutateAsync(id);
+  };
+
+  const handleAddVenda = (cliente: Cliente) => {
+    setSelectedCliente(cliente);
+    setModalType("venda");
   };
 
   const handleSubmit = async (data: ClienteFormData) => {
     try {
-      setLoading(true);
-
-      if (editingCliente) {
-        await clientesService.atualizar(editingCliente.id!, data);
+      if (selectedCliente) {
+        await atualizarClienteMutation.mutateAsync({
+          id: selectedCliente.id!,
+          cliente: data,
+        });
       } else {
-        await clientesService.adicionar(data);
+        await adicionarClienteMutation.mutateAsync(data);
       }
 
-      setShowForm(false);
-      setEditingCliente(undefined);
-      // Forçar atualização da lista
-      setRefreshKey((prev) => prev + 1);
+      setModalType(null);
+      setSelectedCliente(undefined);
     } catch (error) {
       console.error("Erro ao salvar cliente:", error);
-      alert("Erro ao salvar cliente");
-    } finally {
-      setLoading(false);
+    }
+  };
+
+  const handleSubmitVenda = async (data: { data: string; valor: number }) => {
+    try {
+      if (selectedCliente) {
+        await adicionarVendaMutation.mutateAsync({
+          clienteId: selectedCliente.id!,
+          venda: data,
+        });
+      }
+
+      setModalType(null);
+      setSelectedCliente(undefined);
+    } catch (error) {
+      console.error("Erro ao adicionar venda:", error);
     }
   };
 
   const handleCancel = () => {
-    setShowForm(false);
-    setEditingCliente(undefined);
+    setModalType(null);
+    setSelectedCliente(undefined);
   };
 
+  const handleRefetch = () => {
+    refetch();
+  };
+
+  const isLoadingMutations =
+    adicionarClienteMutation.isPending || atualizarClienteMutation.isPending;
+
+  if (isLoadingClientes) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-lg text-gray-600">Carregando clientes...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+        <p>Erro ao carregar clientes</p>
+        <button
+          onClick={handleRefetch}
+          className="mt-2 text-sm underline hover:no-underline"
+        >
+          Tentar novamente
+        </button>
+      </div>
+    );
+  }
+
   return (
-    <div>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+            Clientes
+          </h1>
+          <p className="text-gray-600">Gerencie seus clientes</p>
+        </div>
+        <button
+          onClick={handleAdd}
+          className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          <FiPlus className="mr-2 h-4 w-4" />
+          Adicionar Cliente
+        </button>
+      </div>
+
       <ClientList
-        key={refreshKey} // Força re-render quando refreshKey muda
-        onAdd={handleAdd}
+        clientes={clientes}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        onAddVenda={handleAddVenda}
+        isDeleting={excluirClienteMutation.isPending}
       />
 
-      {showForm && (
+      {modalType === "cliente" && (
         <ClientForm
-          cliente={editingCliente}
+          cliente={selectedCliente}
           onSubmit={handleSubmit}
           onCancel={handleCancel}
-          loading={loading}
+          loading={isLoadingMutations}
+        />
+      )}
+
+      {modalType === "venda" && selectedCliente && (
+        <VendaForm
+          clienteNome={selectedCliente.nomeCompleto}
+          onSubmit={handleSubmitVenda}
+          onCancel={handleCancel}
+          loading={adicionarVendaMutation.isPending}
         />
       )}
     </div>
