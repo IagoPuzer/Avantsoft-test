@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from "react";
 import {
   LineChart,
   Line,
@@ -8,58 +8,38 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { clientesService } from "../services/clientesService";
 import {
-  normalizarCliente,
   agruparVendasPorDia,
   encontrarClienteMaiorVolume,
   encontrarClienteMaiorMedia,
   encontrarClienteMaiorFrequencia,
   formatarData,
 } from "../utils/dataUtils";
-import type { Cliente } from "../types";
 import { FiTrendingUp, FiDollarSign, FiShoppingCart } from "react-icons/fi";
 import StatCard from "../components/StatCard";
+import { useClientes } from "../hooks/useClientes";
 
 const Dashboard: React.FC = () => {
-  const [clientes, setClientes] = useState<Cliente[]>([]);
-  const [vendasPorDia, setVendasPorDia] = useState<
-    { data: string; total: number }[]
-  >([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string>("");
+  const { data: clientesData, isLoading, error } = useClientes(1, 1000);
 
-  useEffect(() => {
-    carregarDados();
-  }, []);
+  const clientes = useMemo(
+    () => clientesData?.data?.clientes || [],
+    [clientesData?.data?.clientes]
+  );
 
-  const carregarDados = async () => {
-    try {
-      setLoading(true);
-      setError("");
-
-      // Buscar clientes da API
-      const response = await clientesService.listar();
-      const clientesNormalizados =
-        response.data.clientes.map(normalizarCliente);
-      setClientes(clientesNormalizados);
-
-      // Calcular vendas por dia
-      const vendas = agruparVendasPorDia(clientesNormalizados);
-      setVendasPorDia(vendas);
-    } catch (err) {
-      setError("Erro ao carregar dados do dashboard");
-      console.error("Erro:", err);
-    } finally {
-      setLoading(false);
+  // Calcular vendas por dia usando useMemo
+  const vendasPorDia = useMemo(() => {
+    if (clientes.length > 0) {
+      return agruparVendasPorDia(clientes);
     }
-  };
+    return [];
+  }, [clientes]);
 
   const clienteMaiorVolume = encontrarClienteMaiorVolume(clientes);
   const clienteMaiorMedia = encontrarClienteMaiorMedia(clientes);
   const clienteMaiorFrequencia = encontrarClienteMaiorFrequencia(clientes);
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-lg text-gray-600">Carregando dashboard...</div>
@@ -70,7 +50,7 @@ const Dashboard: React.FC = () => {
   if (error) {
     return (
       <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-        {error}
+        Erro ao carregar dados do dashboard
       </div>
     );
   }
