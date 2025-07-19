@@ -113,7 +113,7 @@ const ClientList: React.FC<ClientListProps> = ({
                     </div>
                     <div className="flex items-center text-sm text-gray-600">
                       <FiShoppingCart className="mr-2 h-4 w-4 text-purple-500" />
-                      <span>Compras: {estatisticas.frequenciaCompras}</span>
+                      <span>Vendas: {estatisticas.frequenciaVendas}</span>
                     </div>
                   </div>
                 </div>
@@ -122,14 +122,14 @@ const ClientList: React.FC<ClientListProps> = ({
                 <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 lg:ml-4 lg:flex-shrink-0">
                   <button
                     onClick={() => onAddVenda(cliente)}
-                    className="w-full sm:w-auto inline-flex items-center justify-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                    className="w-full sm:w-auto inline-flex items-center justify-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 cursor-pointer"
                   >
                     <FiPlus className="mr-1 h-3 w-3" />
                     Venda
                   </button>
                   <button
                     onClick={() => onEdit(cliente)}
-                    className="w-full sm:w-auto inline-flex items-center justify-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    className="w-full sm:w-auto inline-flex items-center justify-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer"
                   >
                     <FiEdit className="mr-1 h-3 w-3" />
                     Editar
@@ -137,7 +137,7 @@ const ClientList: React.FC<ClientListProps> = ({
                   <button
                     onClick={() => onDelete(cliente.id!)}
                     disabled={isDeleting}
-                    className="w-full sm:w-auto inline-flex items-center justify-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full sm:w-auto inline-flex items-center justify-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                   >
                     <FiTrash2 className="mr-1 h-3 w-3" />
                     {isDeleting ? "Excluindo..." : "Excluir"}

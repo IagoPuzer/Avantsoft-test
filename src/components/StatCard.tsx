@@ -18,7 +18,7 @@ const StatCard: React.FC<StatCardProps> = ({
   iconColor,
 }) => {
   return (
-    <div className="bg-white overflow-hidden shadow rounded-lg">
+    <div className="bg-white overflow-hidden shadow rounded-lg hover:shadow-lg transform transition-all">
       <div className="p-5">
         <div className="flex items-center">
           <div className="flex-shrink-0">
