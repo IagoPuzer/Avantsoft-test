@@ -70,48 +70,66 @@ export const agruparVendasPorDia = (clientes: Cliente[]) => {
 // Encontra cliente com maior volume de vendas
 export const encontrarClienteMaiorVolume = (
   clientes: Cliente[]
-): Cliente | null => {
+): { cliente: Cliente; estatisticas: ClienteEstatisticas } | null => {
   if (clientes.length === 0) return null;
 
-  return clientes.reduce((maior, atual) => {
-    const estatisticasAtual = calcularEstatisticasCliente(atual);
-    const estatisticasMaior = calcularEstatisticasCliente(maior);
+  return clientes.reduce(
+    (maior, atual) => {
+      const estatisticasAtual = calcularEstatisticasCliente(atual);
+      const estatisticasMaior = calcularEstatisticasCliente(maior.cliente);
 
-    return estatisticasAtual.totalVendas > estatisticasMaior.totalVendas
-      ? atual
-      : maior;
-  });
+      return estatisticasAtual.totalVendas > estatisticasMaior.totalVendas
+        ? { cliente: atual, estatisticas: estatisticasAtual }
+        : maior;
+    },
+    {
+      cliente: clientes[0],
+      estatisticas: calcularEstatisticasCliente(clientes[0]),
+    }
+  );
 };
 
 // Encontra cliente com maior média de valor por venda
 export const encontrarClienteMaiorMedia = (
   clientes: Cliente[]
-): Cliente | null => {
+): { cliente: Cliente; estatisticas: ClienteEstatisticas } | null => {
   if (clientes.length === 0) return null;
 
-  return clientes.reduce((maior, atual) => {
-    const estatisticasAtual = calcularEstatisticasCliente(atual);
-    const estatisticasMaior = calcularEstatisticasCliente(maior);
+  return clientes.reduce(
+    (maior, atual) => {
+      const estatisticasAtual = calcularEstatisticasCliente(atual);
+      const estatisticasMaior = calcularEstatisticasCliente(maior.cliente);
 
-    return estatisticasAtual.mediaValor > estatisticasMaior.mediaValor
-      ? atual
-      : maior;
-  });
+      return estatisticasAtual.mediaValor > estatisticasMaior.mediaValor
+        ? { cliente: atual, estatisticas: estatisticasAtual }
+        : maior;
+    },
+    {
+      cliente: clientes[0],
+      estatisticas: calcularEstatisticasCliente(clientes[0]),
+    }
+  );
 };
 
 // Encontra cliente com maior frequência de compras
 export const encontrarClienteMaiorFrequencia = (
   clientes: Cliente[]
-): Cliente | null => {
+): { cliente: Cliente; estatisticas: ClienteEstatisticas } | null => {
   if (clientes.length === 0) return null;
 
-  return clientes.reduce((maior, atual) => {
-    const estatisticasAtual = calcularEstatisticasCliente(atual);
-    const estatisticasMaior = calcularEstatisticasCliente(maior);
+  return clientes.reduce(
+    (maior, atual) => {
+      const estatisticasAtual = calcularEstatisticasCliente(atual);
+      const estatisticasMaior = calcularEstatisticasCliente(maior.cliente);
 
-    return estatisticasAtual.frequenciaCompras >
-      estatisticasMaior.frequenciaCompras
-      ? atual
-      : maior;
-  });
+      return estatisticasAtual.frequenciaCompras >
+        estatisticasMaior.frequenciaCompras
+        ? { cliente: atual, estatisticas: estatisticasAtual }
+        : maior;
+    },
+    {
+      cliente: clientes[0],
+      estatisticas: calcularEstatisticasCliente(clientes[0]),
+    }
+  );
 };
