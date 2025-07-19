@@ -55,7 +55,7 @@ export const encontrarLetraFaltante = (nome: string): string => {
     }
   }
 
-  return "-"; // Todas as letras estão presentes
+  return "-";
 };
 
 // Agrupa vendas por dia
@@ -80,19 +80,18 @@ export const agruparVendasPorDia = (clientes: Cliente[]) => {
     .sort((a, b) => new Date(a.data).getTime() - new Date(b.data).getTime());
 };
 
-// Encontra cliente com maior volume de vendas
-export const encontrarClienteMaiorVolume = (
-  clientes: Cliente[]
-): { cliente: Cliente; estatisticas: ClienteEstatisticas } | null => {
+// Função genérica para encontrar cliente com maior valor de um critério
+function encontrarClienteComMaiorValor(
+  clientes: Cliente[],
+  criterio: (estat: ClienteEstatisticas) => number
+): { cliente: Cliente; estatisticas: ClienteEstatisticas } | null {
   if (clientes.length === 0) return null;
-
   return clientes.reduce(
     (maior, atual) => {
-      const estatisticasAtual = calcularEstatisticasCliente(atual);
-      const estatisticasMaior = calcularEstatisticasCliente(maior.cliente);
-
-      return estatisticasAtual.totalVendas > estatisticasMaior.totalVendas
-        ? { cliente: atual, estatisticas: estatisticasAtual }
+      const estatAtual = calcularEstatisticasCliente(atual);
+      const estatMaior = calcularEstatisticasCliente(maior.cliente);
+      return criterio(estatAtual) > criterio(estatMaior)
+        ? { cliente: atual, estatisticas: estatAtual }
         : maior;
     },
     {
@@ -100,49 +99,22 @@ export const encontrarClienteMaiorVolume = (
       estatisticas: calcularEstatisticasCliente(clientes[0]),
     }
   );
-};
+}
+
+// Encontra cliente com maior volume de vendas
+export const encontrarClienteMaiorVolume = (
+  clientes: Cliente[]
+): { cliente: Cliente; estatisticas: ClienteEstatisticas } | null =>
+  encontrarClienteComMaiorValor(clientes, (estat) => estat.totalVendas);
 
 // Encontra cliente com maior média de valor por venda
 export const encontrarClienteMaiorMedia = (
   clientes: Cliente[]
-): { cliente: Cliente; estatisticas: ClienteEstatisticas } | null => {
-  if (clientes.length === 0) return null;
-
-  return clientes.reduce(
-    (maior, atual) => {
-      const estatisticasAtual = calcularEstatisticasCliente(atual);
-      const estatisticasMaior = calcularEstatisticasCliente(maior.cliente);
-
-      return estatisticasAtual.mediaValor > estatisticasMaior.mediaValor
-        ? { cliente: atual, estatisticas: estatisticasAtual }
-        : maior;
-    },
-    {
-      cliente: clientes[0],
-      estatisticas: calcularEstatisticasCliente(clientes[0]),
-    }
-  );
-};
+): { cliente: Cliente; estatisticas: ClienteEstatisticas } | null =>
+  encontrarClienteComMaiorValor(clientes, (estat) => estat.mediaValor);
 
 // Encontra cliente com maior frequência de compras
 export const encontrarClienteMaiorFrequencia = (
   clientes: Cliente[]
-): { cliente: Cliente; estatisticas: ClienteEstatisticas } | null => {
-  if (clientes.length === 0) return null;
-
-  return clientes.reduce(
-    (maior, atual) => {
-      const estatisticasAtual = calcularEstatisticasCliente(atual);
-      const estatisticasMaior = calcularEstatisticasCliente(maior.cliente);
-
-      return estatisticasAtual.frequenciaCompras >
-        estatisticasMaior.frequenciaCompras
-        ? { cliente: atual, estatisticas: estatisticasAtual }
-        : maior;
-    },
-    {
-      cliente: clientes[0],
-      estatisticas: calcularEstatisticasCliente(clientes[0]),
-    }
-  );
-};
+): { cliente: Cliente; estatisticas: ClienteEstatisticas } | null =>
+  encontrarClienteComMaiorValor(clientes, (estat) => estat.frequenciaCompras);
