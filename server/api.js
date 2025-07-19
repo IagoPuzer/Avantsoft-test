@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = 3001;
-const DB_PATH = path.join(__dirname, "..", "db.json");
+const DB_PATH = path.join(__dirname, "db.json");
 
 // Middleware
 app.use(cors());
@@ -211,37 +211,7 @@ app.post("/api/clientes/:id/vendas", async (req, res) => {
 
     res.json({
       success: true,
-      data: novaVenda,
-    });
-  } catch (error) {
-    res.status(500).json({ error: "Erro interno do servidor" });
-  }
-});
-
-// DELETE /api/clientes/:id/vendas/:vendaIndex - Remover venda do cliente
-app.delete("/api/clientes/:id/vendas/:vendaIndex", async (req, res) => {
-  try {
-    const db = await readDB();
-    const index = db.clientes.findIndex((c) => c.id === req.params.id);
-
-    if (index === -1) {
-      return res.status(404).json({ error: "Cliente não encontrado" });
-    }
-
-    const vendaIndex = parseInt(req.params.vendaIndex);
-    const vendas = db.clientes[index].estatisticas.vendas;
-
-    if (vendaIndex < 0 || vendaIndex >= vendas.length) {
-      return res.status(404).json({ error: "Venda não encontrada" });
-    }
-
-    const vendaRemovida = vendas.splice(vendaIndex, 1)[0];
-    await writeDB(db);
-
-    res.json({
-      success: true,
-      message: "Venda removida com sucesso",
-      data: vendaRemovida,
+      data: db.clientes[index], // retorna o cliente inteiro atualizado
     });
   } catch (error) {
     res.status(500).json({ error: "Erro interno do servidor" });

@@ -18,6 +18,10 @@
           {
             "data": "2024-01-02",
             "valor": 50
+          },
+          {
+            "data": "2025-07-19",
+            "valor": 10
           }
         ]
       }
@@ -41,7 +45,7 @@
       }
     },
     {
-      "id": "md9pl7tc35njj6v4u2",
+      "id": "mdahbu6n7fymtw6v6lv",
       "info": {
         "nomeCompleto": "Iago Puzer",
         "detalhes": {
@@ -50,32 +54,7 @@
         }
       },
       "estatisticas": {
-        "vendas": [
-          {
-            "data": "2025-07-19",
-            "valor": 2000
-          },
-          {
-            "data": "2025-07-19",
-            "valor": 10
-          },
-          {
-            "data": "2025-07-19",
-            "valor": 110
-          },
-          {
-            "data": "2025-07-19",
-            "valor": 50
-          },
-          {
-            "data": "2025-07-19",
-            "valor": 20
-          },
-          {
-            "data": "2025-07-19",
-            "valor": 10
-          }
-        ]
+        "vendas": []
       }
     }
   ]
