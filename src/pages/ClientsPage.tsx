@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ClientList from "../components/Clients/ClientList";
-import ClientForm from "../components/Clients/ClientForm";
-import VendaForm from "../components/Clients/VendaForm";
+import AddClientForm from "../components/Clients/AddClientForm";
+import AddSaleForm from "../components/Clients/AddSaleForm";
 import {
   useClientes,
   useAdicionarCliente,
@@ -142,7 +142,7 @@ const ClientsPage: React.FC = () => {
       />
 
       {modalType === "cliente" && (
-        <ClientForm
+        <AddClientForm
           cliente={selectedCliente}
           onSubmit={handleSubmit}
           onCancel={handleCancel}
@@ -151,7 +151,7 @@ const ClientsPage: React.FC = () => {
       )}
 
       {modalType === "venda" && selectedCliente && (
-        <VendaForm
+        <AddSaleForm
           clienteNome={selectedCliente.nomeCompleto}
           onSubmit={handleSubmitVenda}
           onCancel={handleCancel}

@@ -14,7 +14,7 @@ interface VendaFormProps {
   loading?: boolean;
 }
 
-const VendaForm: React.FC<VendaFormProps> = ({
+const AddSaleForm: React.FC<VendaFormProps> = ({
   clienteNome,
   onSubmit,
   onCancel,
@@ -158,4 +158,4 @@ const VendaForm: React.FC<VendaFormProps> = ({
   );
 };
 
-export default VendaForm;
+export default AddSaleForm;
