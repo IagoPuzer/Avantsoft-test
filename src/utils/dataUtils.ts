@@ -1,5 +1,18 @@
 import type { Cliente, ClienteAPI, ClienteEstatisticas } from "../types";
 
+// Função para formatar data corretamente, evitando problemas de fuso horário
+export const formatarData = (data: string): string => {
+  // Se a data estiver no formato YYYY-MM-DD, criar a data no fuso horário local
+  if (/^\d{4}-\d{2}-\d{2}$/.test(data)) {
+    const [ano, mes, dia] = data.split("-").map(Number);
+    const dataLocal = new Date(ano, mes - 1, dia); // mes - 1 porque Date usa 0-11
+    return dataLocal.toLocaleDateString("pt-BR");
+  }
+
+  // Para outros formatos, usar a abordagem padrão
+  return new Date(data).toLocaleDateString("pt-BR");
+};
+
 // Normaliza dados da API para o formato interno
 export const normalizarCliente = (clienteAPI: ClienteAPI): Cliente => {
   return {
